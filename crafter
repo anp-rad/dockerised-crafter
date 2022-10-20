@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+usage() {
+  echo ""
+  echo "Usage: $(basename "$0") INTERFACE CONTEXT "
+  echo ""
+  echo "Manage Crafter containers and sites"
+  echo ""
+  echo "Interfaces:"
+  echo "  authoring  Manage Crafter authoring containers and sites"
+  echo "  delivery   Manage Crafter delivery containers and sites"
+  echo ""
+  echo "Run '$(basename "$0") INTERFACE --help' for more information on how to manage an INTERFACE."
+}
+
+CRAFTER_HOME=${CRAFTER_HOME:=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}
+CRAFTER_SCRIPTS_HOME=${CRAFTER_HOME}/scripts
+export CRAFTER_HOME
+export CRAFTER_SCRIPTS_HOME
+
+case $1 in
+authoring | delivery)
+  INTERFACE=$1
+  export INTERFACE
+  CMD_PREFIX="crafter $1"
+  export CMD_PREFIX
+  # shellcheck disable=SC2068
+  "${CRAFTER_SCRIPTS_HOME}/main.sh" ${@:2}
+  ;;
+*)
+  usage
+  exit 1
+  ;;
+esac
